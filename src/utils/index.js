@@ -11,7 +11,12 @@ export function parseTime(time, cFormat) {
   if (typeof time === 'object') {
     date = time
   } else {
-    if (('' + time).length === 10) time = parseInt(time) * 1000
+    if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
+      time = parseInt(time)
+    }
+    if ((typeof time === 'number') && (time.toString().length === 10)) {
+      time = time * 1000
+    }
     date = new Date(time)
   }
   const formatObj = {
@@ -164,17 +169,6 @@ export function objectMerge(target, source) {
   return target
 }
 
-export function scrollTo(element, to, duration) {
-  if (duration <= 0) return
-  const difference = to - element.scrollTop
-  const perTick = (difference / duration) * 10
-  setTimeout(() => {
-    element.scrollTop = element.scrollTop + perTick
-    if (element.scrollTop === to) return
-    scrollTo(element, to, duration - 10)
-  }, 10)
-}
-
 export function toggleClass(element, className) {
   if (!element || !className) {
     return
@@ -295,4 +289,8 @@ export function deepClone(source) {
 
 export function uniqueArr(arr) {
   return Array.from(new Set(arr))
+}
+
+export function isExternal(path) {
+  return /^(https?:|mailto:|tel:)/.test(path)
 }
